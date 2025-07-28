@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ShopiBot - Your AI-Powered Shopify Assistant</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="ShopiBot is your AI-powered Shopify assistant, ready to answer any questions you have about Shopify. Get instant help and insights with our intelligent chatbot." />
+    <meta name="keywords" content="ShopiBot, AI Shopify Assistant, Shopify chatbot, Shopify help, Shopify support, Shopify assistant, AI chatbot, Shopify questions, Shopify insights, eCommerce assistant" />
+    <link rel="icon" type="image/png" href="/static/assets/img/title_icon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="canonical" href="{% if canonical_url %}{{ canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="PROPERO" />
+    <meta name="publisher" content="PROPERO" />
+    <script>
+        !function () {var reb2b = window.reb2b = window.reb2b || [];
+        if (reb2b.invoked) return;reb2b.invoked = true;reb2b.methods = ["identify", "collect"];
+        reb2b.factory = function (method) {return function () {var args = Array.prototype.slice.call(arguments);
+        args.unshift(method);reb2b.push(args);return reb2b;};};
+        for (var i = 0; i < reb2b.methods.length; i++) {var key = reb2b.methods[i];reb2b[key] = reb2b.factory(key);}
+        reb2b.load = function (key) {var script = document.createElement("script");script.type = "text/javascript";script.async = true;
+        script.src = "https://s3-us-west-2.amazonaws.com/b2bjsstore/b/" + key + "/reb2b.js.gz";
+        var first = document.getElementsByTagName("script")[0];
+        first.parentNode.insertBefore(script, first);};
+        reb2b.SNIPPET_VERSION = "1.0.1";reb2b.load("RGNLKQHXZM6Q");}();
+    </script>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100vh;
+        background-image: url('/static/assets/img/bg-img.png');
+        background: linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)), url("/static/assets/img/bg-img.png");
+        background-size: cover;
+        background-position: bottom;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        list-style-type: disc; /* Adjust as needed | added by chatgpt */
+        margin-left: 40px; /* added by chatgpt */
+    }
+
+    .main-container .header {
+        padding: 20px 40px;
+    }
+
+    .main-container .logo {
+        width: 150px;
+    }
+
+    .chatbot .input-section {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding: 1rem 3.5rem;
+        z-index: 99;
+    }
+
+    .chatbot .input-section textarea {
+        width: 100%;
+        height: 100px;
+        margin: 0px auto;
+        outline: none;
+        resize: none;
+        padding: 1rem 10rem 1rem 2rem;
+        border: navajowhite;
+        border-radius: 20px;
+        color: #212529;
+        background-color: #F0F0F0;
+    }
+
+    .chatbot .input-section textarea:focus-visible {
+        border: 2px solid #D2D2D2;
+        box-shadow: 1px 1px 10px 0px rgba(93, 147, 208, 0.25);
+    }
+
+    .chatbot h2 {
+        font-weight: 700;
+        text-align: center;
+        margin: 0;
+        padding: 10px;
+    }
+
+    body #message-section {
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        margin: 0px auto;
+        margin-top: 2rem;
+        padding: 4rem 2rem 8rem;
+        overflow-y: scroll;
+    }
+
+    body #message-section::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Handle */
+    body #message-section::-webkit-scrollbar-thumb {
+        background: #6b6b70;
+        border-radius: 10px;
+    }
+
+    body #message-section #bot,
+    body #message-section #user,
+    body #message-section #think {
+        position: relative;
+        bottom: 0;
+        background-color: #FFF5DA;
+        border-radius: 10px;
+        padding: 0 1rem;
+        margin: 1.5vw;
+        border-radius: 10px;
+        border: 1px solid #D2D2D2;
+        box-shadow: 1px 1px 10px 0px rgba(93, 147, 208, 0.25);
+    }
+
+    body #message-section #user {
+        border-radius: 10px;
+        background-color: #F0F0F0;
+        align-self: flex-end;
+        padding: 1rem;
+    }
+
+    body #message-section #user #user-response {
+        color: #0F0F0F;
+    }
+
+    body #message-section #bot {
+        max-width: 85%;
+        word-wrap: break-word;
+        padding-bottom: 10px;
+    }
+
+    body #message-section .copy-text {
+        font-size: 12px;
+        font-weight: 600;
+        float: right;
+    }
+
+    body #message-section .heading {
+        font-size: 20px;
+        font-weight: 500;
+        display: inline-block;
+        padding: 10px;
+        margin: 0;
+    }
+
+    body .send {
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        position: absolute;
+        right: 5%;
+        bottom: 43%;
+    }
+
+    body .send img.send-img {
+        padding-left: 20px;
+    }
+
+    @media screen and (max-width: 767px) {
+        body #message-section #bot {
+            max-width: 100%;
+        }
+
+        .chatbot-body {
+            max-height: 55vh;
+        }
+
+        body #message-section {
+            padding: 1rem;
+        }
+
+        .chatbot .input-section {
+            padding: 1rem;
+        }
+
+        body .send img.send-img {
+            padding-left: 5px;
+        }
+
+        .chatbot .input-section textarea {
+            padding: 1rem 6rem 1rem 2rem;
+        }
+    }
+
+    .chat-message {
+        margin: 10px 0;
+    }
+
+    .chat-message h1, .chat-message h2, .chat-message h3 {
+        color: #333;
+    }
+
+    .chat-message pre {
+        background: #f4f4f4;
+        padding: 10px;
+        border-radius: 5px;
+        overflow: auto;
+    }
+
+    .bot-response {
+        margin-top: 10px;
+    }
+
+    .bot-response h1, .bot-response h2, .bot-response h3 {
+        color: #333;
+    }
+
+    .bot-response pre {
+        background: #f4f4f4;
+        padding: 10px;
+        border-radius: 5px;
+        overflow: auto;
+    }
+
+    .bot-response code {
+        background: #f4f4f4;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+
+    .bot-style {
+        position: relative;
+        bottom: 0;
+        background-color: #FFF5DA;
+        border-radius: 10px;
+        padding: 0 1rem;
+        margin: 1.5vw;
+        border: 1px solid #D2D2D2;
+        box-shadow: 1px 1px 10px 0px rgba(93, 147, 208, 0.25);
+    }
+
+    @media screen and (min-width: 768px) {
+        .chatbot h2 {
+            font-size: 36px;
+            line-height: 44px;
+        }
+    }
+</style>
+
+<body class="show-chatbot">
+          <script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Organization",
+  "name": "PROPERO",
+  "logo": "https://www.propero.in/cdn/shop/files/Propero_Logo_1_150x.png",
+  "url": "https://www.propero.in/",
+  "address": [
+    {
+      "@type": "PostalAddress",
+      "streetAddress": "Row House 9, Kundan Real Estate Society, Pimple Saudagar",
+      "addressLocality": "Pune",
+      "addressRegion": "Maharashtra",
+      "postalCode": "411027",
+      "addressCountry": "IN"
+    },
+    {
+      "@type": "PostalAddress",
+      "streetAddress": "Near DKY BPL Chauraha",
+      "addressLocality": "Mandsaur",
+      "addressRegion": "Madhya Pradesh",
+      "postalCode": "458001",
+      "addressCountry": "IN"
+    }
+  ],
+  "sameAs": [
+    "https://www.youtube.com/@properoconsulting4663",
+    "https://www.linkedin.com/company/propero-in/",
+    "https://www.instagram.com/properoconsult/",
+    "https://x.com/ProperoConsult1"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "name": "PROPERO",
+  "url": "https://www.propero.in/",
+  "description": "PROPERO specializes in Shopify theme conversion, eCommerce solutions, automation services, and performance optimization. Our expert team helps businesses enhance their Shopify store speed, streamline workflows with Robocorp automation, and drive growth through cutting-edge technology and innovation.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.propero.in/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PROPERO",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.propero.in/cdn/shop/files/Propero_Logo_1_150x.png"
+    }
+  }
+}
+</script>
+<script type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "Service",
+    "serviceType": "Intelligent Automation",
+    "provider": {
+      "@type": "Organization",
+      "name": "PROPERO",
+      "url": "https://www.propero.in"
+    },
+    "description": "PROPERO offers tailored Intelligent Automation solutions, including custom automation, seamless workflow automation, business process automation, robotic process automation (RPA), automated error reduction, AI and machine learning integration, and cost reduction through automation. Our experienced team helps businesses streamline processes and achieve significant cost savings.",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Global"
+    },
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://www.propero.in/pages/intelligent-automation"
+    },
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Businesses"
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Service",
+    "serviceType": "Shopify Development",
+    "provider": {
+      "@type": "Organization",
+      "name": "PROPERO",
+      "url": "https://www.propero.in"
+    },
+    "description": "PROPERO specializes in Shopify development, offering services such as custom Shopify development, theme customization, app integration, store performance optimization, store migration, SEO for Shopify stores, and e-commerce growth strategies. With over 200+ clients, we help businesses enhance their online stores and achieve significant growth.",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Global"
+    },
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://www.propero.in/pages/shopify"
+    },
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "E-commerce Businesses"
+    }
+  }
+]
+</script>
+
+    <div class="main-container chatbot">
+        <div class="header">
+            <a href="https://www.propero.in"><img src="/static/assets/img/chat_propero_logo.png" class="logo" alt="Logo"></a>
+        </div>
+
+        <h2>ShopiBot - Your AI-Powered Shopify Assistant</h2>
+
+        <div class="chatbot-body">
+            <div id="message-section">
+                <div class="startMessage" id="bot">
+                    <img src="/static/assets/img/favicon.webp" class="bot-image" alt="Chat avatar">
+                    <p class="heading">ShopiBot</p>
+                    <pre class="mb-0" id="bot-response">Meet ShopiBot. Ask me anything about Shopify and get instant, accurate answers.</pre>
+
+                    <!-- <button class="btn btn-dark copy-text" data-clipboard-target="#bot-response"
+                        onclick="copy('#bot-response')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path
+                                d="M8 2C7.46957 2 6.96086 2.21071 6.58579 2.58579C6.21071 2.96086 6 3.46957 6 4V14C6 14.5304 6.21071 15.0391 6.58579 15.4142C6.96086 15.7893 7.46957 16 8 16H14C14.5304 16 15.0391 15.7893 15.4142 15.4142C15.7893 15.0391 16 14.5304 16 14V4C16 3.46957 15.7893 2.96086 15.4142 2.58579C15.0391 2.21071 14.5304 2 14 2H8ZM7 4C7 3.73478 7.10536 3.48043 7.29289 3.29289C7.48043 3.10536 7.73478 3 8 3H14C14.2652 3 14.5196 3.10536 14.7071 3.29289C14.8946 3.48043 15 3.73478 15 4V14C15 14.2652 14.8946 14.5196 14.7071 14.7071C14.5196 14.8946 14.2652 15 14 15H8C7.73478 15 7.48043 14.8946 7.29289 14.7071C7.10536 14.5196 7 14.2652 7 14V4ZM4 6C4.00001 5.64894 4.09243 5.30406 4.26796 5.00003C4.4435 4.696 4.69597 4.44353 5 4.268V14.5C5 15.163 5.26339 15.7989 5.73223 16.2678C6.20107 16.7366 6.83696 17 7.5 17H13.732C13.5565 17.304 13.304 17.5565 13 17.732C12.6959 17.9076 12.3511 18 12 18H7.5C6.57174 18 5.6815 17.6313 5.02513 16.9749C4.36875 16.3185 4 15.4283 4 14.5V6Z"
+                                fill="white" />
+                        </svg>
+                        Copy</button> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <form method="post">
+                {% csrf_token %}
+                <textarea id="messageinput" name="messageinput" placeholder="Ask ShopiBot..."></textarea>
+                <button class="send" onclick="sendMessage(event)"><img src="/static/assets/img/send.svg" class="send-img" alt="Send Icon"></button>
+            </form>
+        </div>
+
+    </div>
+</body>
+
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
+<script>
+
+    var botText = $('.startMessage #bot-response').text();
+    var aText = new Array(botText);
+
+    var iSpeed = 30;
+    var iIndex = 0;
+    var iArrLength = aText[0].length;
+    var iScrollAt = 20;
+
+    var iTextPos = 0;
+    var sContents = '';
+    var iRow;
+
+    function typewriter() {
+        sContents = ' ';
+        iRow = Math.max(0, iIndex - iScrollAt);
+        var destination = document.getElementById("bot-response");
+
+        while (iRow < iIndex) {
+            sContents += aText[iRow++] + '<br />';
+        }
+        destination.innerHTML = sContents + aText[iIndex].substring(0, iTextPos) + "";
+        if (iTextPos++ == iArrLength) {
+            iTextPos = 0;
+            iIndex++;
+            if (iIndex != aText.length) {
+                iArrLength = aText[iIndex].length;
+                setTimeout("typewriter()", 500);
+            }
+        } else {
+            setTimeout("typewriter()", iSpeed);
+        }
+    }
+    typewriter();
+</script>
+
+<!-- Copy to Clipboard -->
+<script>
+    $(function () {
+        new Clipboard('.copy-text');
+    });
+</script>
+
+
+<script>
+
+    $("textarea").keydown(function (e) {
+        if (e.keyCode == 13 && !e.shiftKey) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+
+<script>
+    const userMessage = [
+        ["hi", "hey", "hello"]
+    ];
+    const botReply = [
+        "{{ response }}"
+    ];
+
+    const alternative = [
+        "{{ response }}"
+    ];
+
+    const synth = window.speechSynthesis;
+
+    function voiceControl(string) {
+        let u = new SpeechSynthesisUtterance(string);
+        u.text = string;
+        u.lang = "en-aus";
+        u.volume = 0;
+        u.rate = 1;
+        u.pitch = 1;
+        synth.speak(u);
+    }
+
+    function sendMessage(event) {
+        if (event) {
+            event.preventDefault();
+        }
+        const inputField = document.getElementById("messageinput");
+        let input = inputField.value.trim();
+        if (input) {
+            let outputResult = output(input);
+            input !== "" && outputResult;
+            inputField.value = "";
+        }
+    }
+
+    const chatHistory = []
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputField = document.getElementById("messageinput");
+        const sendButton = document.querySelector(".send");
+        if (event == PointerEvent) {
+            sendButton.addEventListener("click", function () {
+                if (e.pointerId == 1) {
+                    e.preventDefault();
+                    sendMessage(event);
+                }
+            });
+        }
+        else {
+            inputField.addEventListener("keydown", function (e) {
+                if (e.code === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();  // Call sendMessage function when "Enter" key is pressed
+                    
+                }
+            });
+        }
+    });
+
+    async function output(input) {
+
+    let product;
+
+    // Preprocessing the input
+    let text = input.toLowerCase().replace(/[^\w\s\d]/gi, "");
+    text = text
+        .replace(/[\W_]/g, " ")
+        .replace(/ a /g, " ")
+        .replace(/i feel /g, "")
+        .replace(/whats/g, "what is")
+        .replace(/please /g, "")
+        .replace(/ please/g, "")
+        .trim();
+
+    let comparedText = compare(userMessage, botReply, text);
+
+    addThinkingMessage(input); // Add "thinking" message
+
+    const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+        body: JSON.stringify({ message: input, history: chatHistory }),
+    });
+
+    const reader = response.body.getReader();
+    let output = "";
+    const mainDiv = document.getElementById("message-section");
+    const thinkingMessage = document.getElementById("think");
+
+    // Remove "thinking" message if it exists
+    if (thinkingMessage) {
+        mainDiv.removeChild(thinkingMessage);
+    }
+
+    let botDiv = null; // Declare botDiv outside the loop
+
+    while (true) {
+        const { done, value } = await reader.read();
+
+        // Decode the chunk
+        output += new TextDecoder().decode(value);
+
+        // Reset botDiv to null at the start of each iteration
+        if (!botDiv) {
+            console.log("Creating botDiv!");
+            botDiv = document.createElement("div");
+            botDiv.classList.add("message", "bot-style");
+            botDiv.innerHTML = `
+                <img src="/static/assets/img/favicon.webp" class="bot-image" alt="Chat avatar">
+                <p class="heading">ShopiBot</p>
+                <div class="bot-response"></div>`;
+            mainDiv.appendChild(botDiv);
+        }
+
+        // Append the current chunk to the bot's response container
+        const responseContainer = botDiv.querySelector(".bot-response");
+        responseContainer.innerHTML = marked.parse(output);
+
+        // Scroll to the bottom of the message section
+        scrollToBottom();
+
+        if (done) {
+            chatHistory.push({ role: "user", content: input });
+            chatHistory.push({ role: "assistant", content: output });
+            return; // Exit the loop when streaming is complete
+        }
+    }
+}
+
+    function compare(triggerArray, replyArray, string) {
+        let item;
+        for (let x = 0; x < triggerArray.length; x++) {
+            for (let y = 0; y < replyArray.length; y++) {
+                if (triggerArray[x][y] == string) {
+                    items = replyArray[x];
+                    item = items[Math.floor(Math.random() * items.length)];
+                }
+            }
+        }
+        //containMessageCheck(string);
+        if (item) return item;
+        else return containMessageCheck(string);
+    }
+
+    function containMessageCheck(string) {
+        let expectedReply = [
+            ["Good Bye, dude"],
+            ["Good morning, Have a great day!", "Morning, dude!"]
+        ];
+        let expectedMessage = [
+            ["bye", "tc", "take care"],
+            ["morning", "good morning"],
+        ];
+        let item;
+        for (let x = 0; x < expectedMessage.length; x++) {
+            if (expectedMessage[x].includes(string)) {
+                items = expectedReply[x];
+                item = items[Math.floor(Math.random() * items.length)];
+            }
+        }
+        return item;
+    }
+    function addChat(input) {
+        // console.log("input:", input);
+        // console.log("product:", product);
+        const mainDiv = document.getElementById("message-section");
+        let userDiv = document.createElement("div");
+        userDiv.id = "user";
+        userDiv.classList.add("userInput"); // changed class from 'message' to 'userInput' for testing
+        const inputHtmlContent = marked.parse(input);
+        userDiv.innerHTML = `<pre id="user-response">${inputHtmlContent}</pre>`;
+        mainDiv.appendChild(userDiv);
+
+        let thinking = document.createElement("div");
+        thinking.id = "think";
+        thinking.classList.add("think-message");
+        thinking.innerHTML = `<img src="/static/assets/img/favicon.webp" class="bot-image" alt="Chat avatar"><p class="heading">ShopiBot</p><p>Thinking <img src="/static/assets/img/loading.gif"</p>`;
+
+        let botDiv = document.createElement("div");
+        botDiv.id = "bot";
+        botDiv.classList.add("message");
+        botDiv.innerHTML = `<img src="/static/assets/img/favicon.webp" class="bot-image" alt="Chat avatar"><p class="heading">ShopiBot</p><pre class="mb-0" id="bot-response">${input}</pre>`;
+        mainDiv.appendChild(thinking);
+
+        setTimeout(function () {
+            mainDiv.appendChild(botDiv);
+
+            document.querySelectorAll('.think-message').forEach(function (el) {
+                el.style.display = 'none';
+            });
+
+
+        }, 1000);
+
+        // var scroll = document.getElementById("message-section");
+        // scroll.scrollTop = scroll.scrollHeight;
+        // voiceControl(product);
+    }
+
+    function addThinkingMessage(input) {
+        // console.log("addThinkingMessage");
+        const mainDiv = document.getElementById("message-section");
+        let userDiv = document.createElement("div");
+        userDiv.id = "user";
+        userDiv.classList.add("userInput"); // replacing classname from 'message' to 'userInput' for testing
+        userDiv.innerHTML = `<span id="user-response"><pre>${input}</pre></span>`;
+        mainDiv.appendChild(userDiv);
+        let thinking = document.createElement("div");
+        thinking.id = "think";
+        thinking.classList.add("think-message");
+        thinking.innerHTML = `<img src="/static/assets/img/favicon.webp" class="bot-image" alt="Chat avatar"><p class="heading">ShopiBot</p><p>Thinking <img src="/static/assets/img/loading.gif" width="15" height="15"></p>`;
+        mainDiv.appendChild(thinking);
+        let botResponse = document.createElement("div");
+        botResponse.id = "botResponse";
+        botResponse.classList.add("list-bot-response");
+        mainDiv.appendChild(botResponse);
+        scrollToBottom();
+    }
+
+    function replaceThinkingMessage(product, botDiv) {
+        // console.log("count ------>", count);
+
+        const mainDiv = document.getElementById("message-section");
+        const thinkingMessage = document.getElementById("think");
+
+        // let botDiv = document.querySelector(".message.bot-style");
+        // console.log("querySelectorBotDiv:", botDiv);
+        let elements = document.getElementsByClassName("message");
+        // console.log("Message class elements:", elements.length);
+
+        // count += 1;
+
+        if (!botDiv) {
+            // console.log("bot div not present");
+            botDiv = document.createElement("div");
+            botDiv.classList.add("message", "bot-style");
+            botDiv.id = `bot`;
+            // console.log("created bot message div");
+        }
+
+        const htmlContent = marked.parse(product);
+
+        // Set the inner HTML of the botDiv
+        botDiv.innerHTML = `
+            <img src="/static/assets/img/favicon.webp" class="bot-image" alt="Chat avatar">
+            <p class="heading">ShopiBot</p>
+            <div class="bot-response">${htmlContent}</div>
+        `;
+
+        // Append the botDiv to the mainDiv
+        mainDiv.appendChild(botDiv);
+
+        // Scroll to the bottom of the message section
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        var scroll = document.getElementById("message-section");
+        scroll.scrollTop = scroll.scrollHeight;
+    }
+
+</script>

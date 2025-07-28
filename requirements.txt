@@ -1,0 +1,15 @@
+langchain==0.3.7
+langchain-core==0.3.22
+langchain-text-splitters==0.3.2
+sentence-transformers==3.2.1
+openai==1.55.3
+beautifulsoup4==4.12.3
+langchain-community==0.3.5
+langchain-openai==0.2.5
+faiss-cpu==1.9.0
+django==4.2.16
+psycopg2==2.9.10
+whitenoise==6.8.2
+boto3==1.35.71
+
+# pip install langchain==0.3.7 langchain-text-splitters==0.3.2 sentence-transformers==3.2.1 openai==1.55.3 beautifulsoup4==4.12.3 langchain-community==0.3.5 langchain-openai==0.2.5 faiss-cpu==1.9.0 django==4.2.16 psycopg2==2.9.10 whitenoise==6.8.2 boto3==1.35.71
